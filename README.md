@@ -5,6 +5,8 @@ This project has been tested on Google Colaboratory (20023.Nov).
 
 ### Source Code Descriptions
 
+This repository is designed to be deployed on Google Drive and used primarily through Google Colab. The notebooks should be executed in the order indicated by the sequential numbers at the beginning of their filenames. Each notebook first downloads necessary data and caches precomputed data on Google Drive for memory efficiency and reusability. Subsequent notebooks utilize these cached data for predictions. Therefore, it's essential to authorize Google Drive connection and create a working directory on Google Drive. The path to this directory must be set before executing the notebooks. Additionally, be mindful of the available space on Google Drive, especially when making predictions over extensive areas.
+
 #### 0_PrepareProject.ipynb
 - Initializes the project by setting up the case name and defining the area of interest. Parses CityGML to generate building data within the specified area and pre-downloads Digital Elevation Model (DEM).
 - **Required Procedures**: Connection to Google Drive.
@@ -12,6 +14,7 @@ This project has been tested on Google Colaboratory (20023.Nov).
 #### 1_EstimateSAR-FloodPrbDiff.ipynb
 - Acquires Sentinel-1 data for the area of interest and generates flood probability raster data (logit).
 - **Required Procedures**: Authentication with Google Earth Engine (GEE), Connection to Google Drive.
+- **Required Files**: Flood Estimation Model Checkpoint
 
 #### 2_GeneratePointGroup.ipynb
 - Creates point cloud data from flood probability raster data. Parameters are adjustable.
