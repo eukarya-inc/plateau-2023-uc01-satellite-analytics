@@ -39,6 +39,6 @@ This repository is designed to be deployed on Google Drive and used primarily th
 #### plateau_floodsar_lib.py
 - Downloads and locally saves DEM tiles from the Geospatial Information Authority of Japan, integrates multiple types (e.g., DEM5A, DEM5B), calculates geoid height, and extracts and fills values for the specified area. (Includes 4 classes)
 
-### 3D tile for the usecase at Kurume
+### 3D tile for the use case at Kurume R2 heavy rain
 https://raw.githubusercontent.com/eukarya-inc/plateau-2023-uc01-satellite-analytics/main/Kurume-3dTile/tileset.json
 
