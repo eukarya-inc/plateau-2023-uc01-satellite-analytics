@@ -40,5 +40,5 @@ This repository is designed to be deployed on Google Drive and used primarily th
 - Downloads and locally saves DEM tiles from the Geospatial Information Authority of Japan, integrates multiple types (e.g., DEM5A, DEM5B), calculates geoid height, and extracts and fills values for the specified area. (Includes 4 classes)
 
 ### 3D tile for the usecase at Kurume
-https://github.com/eukarya-inc/plateau-2023-uc01-satellite-analytics/tree/main/Kurume-3dTile
+https://raw.githubusercontent.com/eukarya-inc/plateau-2023-uc01-satellite-analytics/main/Kurume-3dTile/tileset.json
 
