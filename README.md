@@ -37,7 +37,7 @@ This repository is designed to be deployed on Google Drive and used primarily th
 - Generates disaster data for buildings using building data and flood surface elevation raster data.
 - **Required Procedures**: Connection to Google Drive.
 
-#### 5_Uploade.ipynb
+#### 5_Upload.ipynb
 - Uploads data to Re:Earth CMS.
 - **Required Procedures**: Connection to Google Drive, Authentication with Re:Earth CMS.
 
