@@ -7,6 +7,13 @@ This project has been tested on Google Colaboratory (2023.Nov).
 
 This repository is designed to be deployed on Google Drive and used primarily through Google Colab. The notebooks should be executed in the order indicated by the sequential numbers at the beginning of their filenames. Each notebook first downloads necessary data and caches precomputed data on Google Drive for memory efficiency and reusability. Subsequent notebooks utilize these cached data for predictions. Therefore, it's essential to authorize Google Drive connection and create a working directory on Google Drive. The path to this directory must be set before executing the notebooks. Additionally, be mindful of the available space on Google Drive, especially when making predictions over extensive areas.
 
+
+The easiest way is to run the notebook [0_Installation_PLATEAU_FloodSAR.ipynb](https://colab.research.google.com/github/eukarya-inc/plateau-2023-uc01-satellite-analytics/blob/feature/install/PLATEAU-FloodSAR/0_Installation_PLATEAU_FloodSAR.ipynb) to deploy this repository in your google drive and download model checkpoint.
+
+#### 0_Installation_PLATEAU_FloodSAR.ipynb
+- Deploy this repository into your Google Drive and download model checkpoint.
+- **Required Procedures**: Connection to Google Drive
+
 #### 0_PrepareProject.ipynb
 - Initializes the project by setting up the case name and defining the area of interest. Parses CityGML to generate building data within the specified area and pre-downloads Digital Elevation Model (DEM).
 - **Required Procedures**: Connection to Google Drive.
