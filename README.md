@@ -62,6 +62,8 @@ with locally stored GeoTIFF files.
 with locally stored GeoTIFF file. Classicaly analyzed with back scatter coefficient from one scene.
 #### files
 
+## Boundary Samples
+Please use these sample GeoJSONs for 0_PrepareProject upon your needs.
 
 ## Model files
 Following PyTourch model files are stored outside of this GitHub repository due to the filesize limitation. They will be downloaded to your Google drive automatically if you use our installation code Git2Colab_Installation_PLATEAU_FloodSAR.ipynb.
