@@ -4,7 +4,7 @@ This is a usecase for PLATEAU in FY2023.
 This project has been tested on Google Colaboratory (2023.Nov).
 
 ### Installation
-The easiest way to deploy this repository is downloading the notebook [Git2Colab_Installation_PLATEAU_FloodSAR.ipynb](https://github.com/eukarya-inc/plateau-2023-uc01-satellite-analytics/blob/926221925aeb1c36ef216b47c7dd264e74a56481/Git2Colab_Installation_PLATEAU_FloodSAR.ipynb) to your google drive and running it on Google Colaboratory. 
+The easiest way to deploy this repository is downloading the notebook [Git2Colab_Installation_PLATEAU_FloodSAR.ipynb](https://github.com/eukarya-inc/plateau-2023-uc01-satellite-analytics/blob/926221925aeb1c36ef216b47c7dd264e74a56481/Git2Colab_Installation_PLATEAU_FloodSAR.ipynb) to your google drive and running it on Google Colaboratory. It will download all you need including model files not stored in this GitHub repository. 
 
 ### Descriptions of Source Codes under PLATEAU-FloodSAR directory 
 This repository is designed to be deployed on Google Drive and used primarily through Google Colab. The notebooks should be executed in the order indicated by the sequential numbers at the beginning of their filenames. Each notebook first downloads necessary data and caches precomputed data on Google Drive for memory efficiency and reusability. Subsequent notebooks utilize these cached data for predictions. Therefore, it's essential to authorize Google Drive connection and create a working directory on Google Drive. The path to this directory must be set before executing the notebooks. Additionally, be mindful of the available space on Google Drive, especially when making predictions over extensive areas.
@@ -45,4 +45,7 @@ This repository is designed to be deployed on Google Drive and used primarily th
 #### plateau_floodsar_lib.py
 - Downloads and locally saves DEM tiles from the Geospatial Information Authority of Japan, integrates multiple types (e.g., DEM5A, DEM5B), calculates geoid height, and extracts and fills values for the specified area. (Includes 4 classes)
 
-
+### Model files
+Following PyTourch model files are stored outside of this GitHub repository due to the filesize limitation. They will be downloaded to your Google drive automatically if you use our installation code Git2Colab_Installation_PLATEAU_FloodSAR.ipynb.
+- model_epoch_vv_119.pth https://drive.google.com/file/d/1VEgB3VcLOYEwud9Zo-QsHUAMmNkrGDZq/view?usp=drive_link
+- model_epoch_aug_mask_100.pth https://drive.google.com/file/d/1rD68QJQr-gmF9jeZY5qBjVJJqoWOFe7E/view?usp=sharing
