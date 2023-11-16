@@ -19,8 +19,8 @@ This repository is designed to be deployed on Google Drive and used primarily th
 #### 1_EstimateSAR-FloodPrbDiff.ipynb
 - Acquires Sentinel-1 data for the area of interest and generates flood probability raster data (logit).
 - **Required Procedures**: Authentication with Google Earth Engine (GEE), Connection to Google Drive.
-- **Required Files**: Flood Estimation Model Checkpoint
-
+- **Required Files**: Model files
+  
 #### 2_GeneratePointGroup.ipynb
 - Creates point cloud data from flood probability raster data. Parameters are adjustable.
 - **Required Procedures**: Connection to Google Drive.
@@ -49,6 +49,8 @@ This repository is designed to be deployed on Google Drive and used primarily th
 (under construction)
 with locally stored JSON file.
 #### s1-s3_GIAJ_FloodArea_PointGroups.ipynb
+- Substitutes the main steps 1 ~ 3.
+- After runnning this file, please continue at the main step 4.
 
 ### Analyze with ALOS-2 (sub branchs)
 (under construction)
@@ -60,6 +62,8 @@ with locally stored GeoTIFF files.
 with locally stored GeoTIFF file. Classicaly analyzed with back scatter coefficient from one scene.
 #### files
 
+## Boundary Samples
+Please use these sample GeoJSONs for 0_PrepareProject upon your needs.
 
 ## Model files
 Following PyTourch model files are stored outside of this GitHub repository due to the filesize limitation. They will be downloaded to your Google drive automatically if you use our installation code Git2Colab_Installation_PLATEAU_FloodSAR.ipynb.
