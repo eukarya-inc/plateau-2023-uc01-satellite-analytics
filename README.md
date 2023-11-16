@@ -45,7 +45,7 @@ This repository is designed to be deployed on Google Drive and used primarily th
 ### Analyze with GIAJ flood area JSON file (sub branchs)
 (under construction)
 with locally stored JSON file.
-#### files
+#### s1-s3_GIAJ_FloodArea_PointGroups.ipynb
 
 ### Analyze with ALOS-2 (sub branchs)
 (under construction)
