@@ -42,6 +42,7 @@ This repository is designed to be deployed on Google Drive and used primarily th
 - **Required Procedures**: Connection to Google Drive, Authentication with Re:Earth CMS.
 
 #### plateau_floodsar_lib.py
+- Called in steps 0, 3, and 4.
 - Downloads and locally saves DEM tiles from the Geospatial Information Authority of Japan, integrates multiple types (e.g., DEM5A, DEM5B), calculates geoid height, and extracts and fills values for the specified area. (Includes 4 classes)
 
 ### Analyze with GIAJ flood area JSON file (sub branchs)
