@@ -39,11 +39,24 @@ This repository is designed to be deployed on Google Drive and used primarily th
 - Uploads data to Re:Earth CMS.
 - **Required Procedures**: Connection to Google Drive, Authentication with Re:Earth CMS.
 
-#### plateau_floodsar_lib.py
+#####plateau_floodsar_lib.py
 - Downloads and locally saves DEM tiles from the Geospatial Information Authority of Japan, integrates multiple types (e.g., DEM5A, DEM5B), calculates geoid height, and extracts and fills values for the specified area. (Includes 4 classes)
 
-### Analyze with other data sources (sub branchs)
+### Analyze with GIAJ flood area JSON file (sub branchs)
 (under construction)
+with locally stored JSON file.
+#### files
+
+### Analyze with ALOS-2 (sub branchs)
+(under construction)
+with locally stored GeoTIFF files. 
+#### files
+
+### Analyze with ASNARO-2 (sub branchs)
+(under construction)
+with locally stored GeoTIFF file. Classicaly analyzed with back scatter coefficient from one scene.
+#### files
+
 
 ## Model files
 Following PyTourch model files are stored outside of this GitHub repository due to the filesize limitation. They will be downloaded to your Google drive automatically if you use our installation code Git2Colab_Installation_PLATEAU_FloodSAR.ipynb.
