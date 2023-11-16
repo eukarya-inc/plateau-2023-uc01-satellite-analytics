@@ -19,8 +19,8 @@ This repository is designed to be deployed on Google Drive and used primarily th
 #### 1_EstimateSAR-FloodPrbDiff.ipynb
 - Acquires Sentinel-1 data for the area of interest and generates flood probability raster data (logit).
 - **Required Procedures**: Authentication with Google Earth Engine (GEE), Connection to Google Drive.
-- **Required Files**: Flood Estimation Model Checkpoint
-
+- **Required Files**: Model files
+  
 #### 2_GeneratePointGroup.ipynb
 - Creates point cloud data from flood probability raster data. Parameters are adjustable.
 - **Required Procedures**: Connection to Google Drive.
