@@ -20,6 +20,12 @@ This repository is designed to be deployed on Google Drive and used primarily th
 - Acquires Sentinel-1 data for the area of interest and generates flood probability raster data (logit).
 - **Required Procedures**: Authentication with Google Earth Engine (GEE), Connection to Google Drive.
 - **Required Files**: Model files
+
+#### s1_ALOS-2_EstimateSAR-FloodPrb.ipynb
+- generates flood probability raster data (logit) from **local** ALOS-2 SAR data (TIFF).
+- **Required Procedures**: Connection to Google Drive. **Upload local ALOS-2 SAR data into Google Drive** and specify location `tiff_path`.
+- **Required Files**: Model files
+- **Attention**: The area of interest must be included within the local SAR TIFF file.
   
 #### 2_GeneratePointGroup.ipynb
 - Creates point cloud data from flood probability raster data. Parameters are adjustable.
