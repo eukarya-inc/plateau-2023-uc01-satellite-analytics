@@ -57,11 +57,12 @@ with locally stored JSON file.
 with locally stored GeoTIFF files. 
 
 #### s1_ALOS-2_EstimateSAR-FloodPrb.ipynb
+- This is a prototype and not tested with practical flood data.
 - generates flood probability raster data (logit) from **local** ALOS-2 SAR data (TIFF).
 - **Required Procedures**: Connection to Google Drive. **Upload local ALOS-2 SAR data into Google Drive** and specify location `tiff_path`.
 - **Required Files**: Model files
-- **Attention**: The area of interest must be included within the local SAR TIFF file.
-- 
+- **Attention**: The area of interest must be included within the local SAR TIFF file since this file is a prototype.
+  
 ### Analyze with ASNARO-2 (sub branchs)
 (under construction)
 with locally stored GeoTIFF file. Classicaly analyzed with back scatter coefficient from one scene.
