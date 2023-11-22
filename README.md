@@ -73,6 +73,9 @@ with locally stored GeoTIFF file. Classicaly analyzed with back scatter coeffici
 ## Boundary Samples
 Please use these sample GeoJSONs in boundary_samples directory for 0_PrepareProject upon your needs.
 
+## Traninging code
+Training directory contains the code used to train and generate our machine learning models.
+
 ## Model files
 Following PyTourch model files are stored outside of this GitHub repository due to the filesize limitation. They will be downloaded to your Google drive automatically if you use our installation code Git2Colab_Installation_PLATEAU_FloodSAR.ipynb.
 - model_epoch_vv_119.pth https://drive.google.com/file/d/1VEgB3VcLOYEwud9Zo-QsHUAMmNkrGDZq/
