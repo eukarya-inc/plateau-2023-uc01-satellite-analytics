@@ -9,7 +9,7 @@ The easiest way to deploy this repository is clicking this link => <a href="http
 ## Descriptions of Source Codes under PLATEAU-FloodSAR directory 
 This repository is designed to be deployed on Google Drive and used primarily through Google Colab. The notebooks should be executed in the order indicated by the sequential numbers at the beginning of their filenames. Each notebook first downloads necessary data and caches precomputed data on Google Drive for memory efficiency and reusability. Subsequent notebooks utilize these cached data for predictions. Therefore, it's essential to authorize Google Drive connection and create a working directory on Google Drive. The path to this directory must be set before executing the notebooks. Additionally, be mindful of the available space on Google Drive, especially when making predictions over extensive areas.
 
-**main / sub branches** Main branch consists of 6 notebooks + 1 python file and utilizes Sentinel-1 data from Google Earth Engine. Sub branches utilize other data sources such as flood area JSON from GIAJ.
+**main / sub branches**: Main branch consists of 6 notebooks + 1 python file and utilizes Sentinel-1 data from Google Earth Engine. Sub branches utilize other data sources such as flood area JSON from GIAJ.
 
 **sub-brance notation on the file name**: notebook files wich names start with "s" belong to sub branches. A sub-branch file substitutes the step(s) of the main branch associated with the number(s) following to "s" or in range noted as "s#-s#".
 
