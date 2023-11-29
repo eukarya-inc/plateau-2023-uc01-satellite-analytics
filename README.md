@@ -14,14 +14,14 @@ graph TD
 	GEE --> UNET2["UNET/PyTorch"]
 
 	GFD[/"Global Flood Database"/]--> UNET
-	subgraph M1. Flood Extent Model Training
+	subgraph M1. Flood Area Model Training
 	UNET-->LM[/"Flood Learning Model"/]
 	end
-	subgraph M2. Flood Extent Estimation
+	subgraph M2. Flood Area Estimation
 	LM --> UNET2
 	UNET2 --> FR[/"Flood Raster Data"/]
 	end
-	subgraph Development Scope of Georepublic
+	subgraph External Libraries
 	RECA --> PlateauUtils
 	end
 	subgraph M3. Flood Surface Estimation
@@ -56,7 +56,7 @@ Output: Flood Learning Model (VV/VH, VV)
 
 This step involves creating a flood learning model that classifies Sentinel-1 observations based on the flood areas from the Global Flood Database. The classifier comes in two versions: a dual polarization version (VV/VH) and a single polarization version (VV).
 
-**M2. Flood Extent Estimation**
+**M2. Flood Area Estimation**
 
 Inputs: Sentinel-1 (from Google Earth Engine), Flood Learning Model, Date of the Event
 
