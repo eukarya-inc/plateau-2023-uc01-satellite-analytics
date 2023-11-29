@@ -41,9 +41,11 @@ graph TD
 	end
 	ALOS-2[/"ALOS-2 Flood Area Shapefile"/] --> PT2["Flood Point Cloud Data Generation"]
 	ASNARO-2[/ASNARO-2/] --> loadASNR2["Loading (Under Consideration)"]
+	GIAJ[/"GIAJ Flood GeoJson"/] --> loadGeoJSON["GIAJ Flood Area Raster Generation"]
 	subgraph S. Subbranch
 		PT2 --> STAT
 		loadASNR2 --> UNET2
+		loadGeoJSON --> STAT
 	end
 ```
 ### Main Branch Steps
@@ -123,10 +125,10 @@ This repository is designed to be deployed on Google Drive and used primarily th
 - Called in steps 0, 3, and 4.
 - Downloads and locally saves DEM tiles from the Geospatial Information Authority of Japan, integrates multiple types (e.g., DEM5A, DEM5B), calculates geoid height, and extracts and fills values for the specified area. (Includes 4 classes)
 
-### Analyze with GIAJ flood area JSON file (sub branchs)
-(under construction)
+### Analyze with GIAJ flood area GeoJSON file (sub branchs)
 with locally stored JSON file.
 #### s1-s3_GIAJ_FloodArea_Raster.ipynb
+- Generates flood surface elevation raster data frim GIAJ GeoJson.
 - Substitutes the main steps 1 ~ 3.
 - After runnning this file, please continue at the main step 4.
 
