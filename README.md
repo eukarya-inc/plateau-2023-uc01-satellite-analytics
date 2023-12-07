@@ -38,9 +38,10 @@ graph TD
 	localDEM --> loadinglocalDEM["loading locally saved DEM"]
 	end
 	
+	PlateauUtils --> preloading
+
 	subgraph 0_PrepareProject.ipynb
 	boundary[/boundary data/]-->preloading
-	PlateauUtils --> preloading
 	preloading --> localBld[/locally saved parsed buildings/]
 	preloading -----> loadingDEM
 	preloading --> localBnd[/locally saved boundary/]
