@@ -16,7 +16,6 @@ This repository is designed to be deployed on Google Drive and used primarily th
 **sub-sequence notation on the file name**: notebook files wich names start with "s" belong to sub sequences. A sub-branch file substitutes the step(s) of the main sequence associated with the number(s) following to "s" or in range noted as "s#-s#".
 
 ### Analyze with Sentinel-1 from Google Earth Engine (main sequence) 
-### Setps on the Main Sequence
 ```mermaid
 graph TD
 	Sentinel-1[/Sentinel-1/] --> GEE
@@ -99,7 +98,7 @@ Inputs: Global Flood Database
 
 Output: Flood Learning Model (VV/VH, VV)
 
-This step involves creating a flood learning model that classifies Sentinel-1 observations based on the flood areas from the Global Flood Database. The classifier comes in two versions: a dual polarization version (VV/VH) and a single polarization version (VV).
+This step involves creating a flood learning model that classifies Sentinel-1 observations based on the flood areas from the Global Flood Database. The classifier comes in two versions: a dual polarization version (VV/VH) and a single polarization version (VV). The source code is stored in `training` directory.
 
 #### 0_PrepareProject.ipynb
 Inputs: CityGML, boundary of interest
@@ -156,20 +155,19 @@ Uploads data to Re:Earth CMS.
 - Called in steps 0, 3, and 4.
 - Downloads and locally saves DEM tiles from the Geospatial Information Authority of Japan, integrates multiple types (e.g., DEM5A, DEM5B), calculates geoid height, and extracts and fills values for the specified area. (Includes 4 classes)
 
-### Analyze with GIAJ flood area GeoJSON file (sub branchs)
-with locally stored JSON file.
+### Analyze with GIAJ flood area GeoJSON file (sub sequence)
 #### s1-s3_GIAJ_FloodArea_Raster.ipynb
-- Generates flood surface elevation raster data frim GIAJ GeoJson.
+- Works with locally stored JSON file.
+- Generates flood surface elevation raster data from GIAJ GeoJson.
 - Substitutes the main steps 1 ~ 3.
 - After runnning this file, please continue at the main step 4.
 
 ### Analyze with ALOS-2 (sub branchs)
-(under review)
-with locally stored GeoTIFF files. 
-
 #### s1_ALOS-2_EstimateSAR-FloodPrb.ipynb
+- This code is under review.
 - This is a prototype and not tested with practical flood data.
-- generates flood probability raster data (logit) from **local** ALOS-2 SAR data (TIFF).
+- Works with locally stored GeoTIFF files. 
+- Generates flood probability raster data (logit) from **local** ALOS-2 SAR data (TIFF).
 - **Required Procedures**: Connection to Google Drive. **Upload local ALOS-2 SAR data into Google Drive** and specify location `tiff_path`.
 - **Required Files**: Model files
 - **Attention**: The area of interest must be included within the local SAR TIFF file since this file is a prototype.
@@ -181,9 +179,6 @@ with locally stored GeoTIFF file. Classicaly analyzed with back scatter coeffici
 
 ## Boundary Samples
 Please use these sample GeoJSONs in boundary_samples directory for 0_PrepareProject upon your needs.
-
-## Traninging code
-Training directory contains the code used to train and generate our machine learning models.
 
 ## Model files
 Following PyTorch model files are stored outside of this GitHub repository due to the filesize limitation. They will be downloaded to your Google drive automatically if you use our installation code Git2Colab_Installation_PLATEAU_FloodSAR.ipynb.
