@@ -27,7 +27,7 @@ graph TD
 	
 	
 	subgraph sub sequences
-	0prep --> 1ALOS["s1_s1_ALOS-2_EstimateSAR-FloodPrb.ipynb"]
+	0prep --> 1ALOS["s1_ALOS-2_EstimateSAR-FloodPrb.ipynb"]
 	1ALOS --> 2gen
 	0prep -->  1-3GIAJ["s1-s3_GIAJ_FloodArea_Raster.ipynb"]
 	1-3GIAJ --> 3calc
