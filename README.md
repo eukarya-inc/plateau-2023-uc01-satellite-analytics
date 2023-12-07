@@ -92,13 +92,13 @@ graph TD
 	upload --> RECA["Re:EarthCmsAPI"]
 ```
 
-#### Flood Estimation Model Training
+#### Flood Estimation Model Training (already run for you)
 
 Inputs: Global Flood Database
 
 Output: Flood Learning Model (VV/VH, VV)
 
-This step involves creating a flood learning model that classifies Sentinel-1 observations based on the flood areas from the Global Flood Database. The classifier comes in two versions: a dual polarization version (VV/VH) and a single polarization version (VV). The source code is stored in `training` directory.
+This step involves creating a flood learning model that classifies Sentinel-1 observations based on the flood areas from the Global Flood Database. The classifier comes in two versions: a dual polarization version (VV/VH) and a single polarization version (VV). The source code is stored in `training` directory. **This step is already run for you and the resultant models will be downloaded via the installation previously described. Basically you don't need to run this step by yourself.** 
 
 #### 0_PrepareProject.ipynb
 Inputs: CityGML, boundary of interest
