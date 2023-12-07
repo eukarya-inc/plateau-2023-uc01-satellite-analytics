@@ -109,10 +109,6 @@ This repository is designed to be deployed on Google Drive and used primarily th
 - Generates flood surface elevation raster data from point cloud data. Parameters are adjustable.
 - **Required Procedures**: Connection to Google Drive.
 
-#### 3_GIAJ-CalcFloodDEMRaster.ipynb
-- Produces flood surface elevation raster data from flood area GeoJSON published by the Geospatial Information Authority of Japan.
-- **Required Procedures**: Connection to Google Drive.
-
 #### 4_AssessBuildings.ipynb
 - Generates disaster data for buildings using building data and flood surface elevation raster data.
 - **Required Procedures**: Connection to Google Drive.
