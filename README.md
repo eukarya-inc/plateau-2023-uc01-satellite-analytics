@@ -12,10 +12,35 @@ The easiest way to deploy this repository is clicking this link => <a href="http
 This repository is designed to be deployed on Google Drive and used primarily through Google Colab. The notebooks should be executed in the order indicated by the sequential numbers at the beginning of their filenames. Each notebook first downloads necessary data and caches precomputed data on Google Drive for memory efficiency and reusability. Subsequent notebooks utilize these cached data for predictions. Therefore, it's essential to authorize Google Drive connection and create a working directory on Google Drive. The path to this directory must be set before executing the notebooks. **Note: Attention the available space on your Google Drive, especially when making predictions over extensive areas.**
 
 **main / sub sequences**: Main sequence consists of 6 notebooks + 1 python file and utilizes Sentinel-1 data from Google Earth Engine. Sub wequences utilize other data sources such as flood area JSON from GIAJ.
+<details>
+<summary><bf>Detailed diagram</bf></summary>
+	
+```mermaid
+graph TD
+	subgraph main sequence
+	0prep["0_PrepareProject.ipynb"]-->1est["1_EstimateSAR-FloodPrbDiff.ipynb"]
+	1est --> 2gen["2_GeneratePointGroup.ipynb"]
+	2gen --> 3calc["3_CalcFloodDEMRaster.ipynb"]
+	3calc --> 4asses["4_AssessBuildings.ipynb"]
+	4asses --> 5up["5_Upload.ipynb"]
+	end
+	
+	
+	subgraph sub sequences
+	0prep --> 1ALOS["s1_s1_ALOS-2_EstimateSAR-FloodPrb.ipynb"]
+	1ALOS --> 2gen
+	0prep -->  1-3GIAJ["s1-s3_GIAJ_FloodArea_Raster.ipynb"]
+	1-3GIAJ --> 3calc
+	end
+```
+</details>
 
 **sub-sequence notation on the file name**: notebook files wich names start with "s" belong to sub sequences. A sub-branch file substitutes the step(s) of the main sequence associated with the number(s) following to "s" or in range noted as "s#-s#".
 
-### Analyze with Sentinel-1 from Google Earth Engine (main sequence) 
+### Analysis with Sentinel-1 from Google Earth Engine (main sequence) 
+<details>
+<summary><bf>Detailed diagram</bf></summary>
+
 ```mermaid
 graph TD
 	Sentinel-1[/Sentinel-1/] --> GEE
@@ -92,6 +117,7 @@ graph TD
 	end
 	upload --> RECA["Re:EarthCmsAPI"]
 ```
+</details>
 
 #### Flood Estimation Model Training (already run for you)
 
@@ -156,14 +182,14 @@ Uploads data to Re:Earth CMS.
 - Called in steps 0, 3, and 4.
 - Downloads and locally saves DEM tiles from the Geospatial Information Authority of Japan, integrates multiple types (e.g., DEM5A, DEM5B), calculates geoid height, and extracts and fills values for the specified area. (Includes 4 classes)
 
-### Analyze with GIAJ flood area GeoJSON file (sub sequence)
+### Analysis with GIAJ flood area GeoJSON file (sub sequence)
 #### s1-s3_GIAJ_FloodArea_Raster.ipynb
 - Works with locally stored JSON file.
 - Generates flood surface elevation raster data from GIAJ GeoJson.
 - Substitutes the main steps 1 ~ 3.
 - After runnning this file, please continue at the main step 4.
 
-### Analyze with ALOS-2 (sub branchs)
+### Analysis with ALOS-2 (sub branchs)
 #### s1_ALOS-2_EstimateSAR-FloodPrb.ipynb
 - This code is under review.
 - This is a prototype and not tested with practical flood data.
@@ -173,7 +199,7 @@ Uploads data to Re:Earth CMS.
 - **Required Files**: Model files
 - **Attention**: The area of interest must be included within the local SAR TIFF file since this file is a prototype.
   
-### Analyze with ASNARO-2 (sub branchs)
+### Analysis with ASNARO-2 (sub branchs)
 (under construction)
 with locally stored GeoTIFF file. Classicaly analyzed with back scatter coefficient from one scene.
 #### files
