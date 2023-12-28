@@ -198,6 +198,7 @@ Uploads data to Re:Earth CMS. Please use s5_SelectedFileUpload.ipynb if you simp
 - **Required Procedures**: Connection to Google Drive. **Upload local ALOS-2 SAR data into Google Drive** and specify location `tiff_path`.
 - **Required Files**: Model files
 - **Attention**: The area of interest must be included within the local SAR TIFF file since this file is a prototype.
+- Please read [FindSARofJapan.md](https://github.com/eukarya-inc/plateau-2023-uc01-satellite-analytics/blob/main/FindSARofJapan.md) to find some hints on finding data.
   
 ### Analysis with ASNARO-2 (sub sequence)
 #### s1-s2_ASNARO-2_EstimateSAR_FloodPrb.ipynb
