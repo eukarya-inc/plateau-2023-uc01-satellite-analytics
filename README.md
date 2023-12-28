@@ -175,7 +175,7 @@ Input: Building Damage Data (CSV), 2D tiles of heatmaps for some building catego
 
 Output: 2Dtile of flood surface dem, 2Dtile of flood depth
 
-Uploads data to Re:Earth CMS.
+Uploads data to Re:Earth CMS. Please use s5_SelectedFileUpload.ipynb if you simply want to upload files without generating 2D tiles at this file.
 - **Required Procedures**: Connection to Google Drive, Authentication with Re:Earth CMS.
 
 #### plateau_floodsar_lib.py
@@ -189,7 +189,7 @@ Uploads data to Re:Earth CMS.
 - Substitutes the main steps 1 ~ 3.
 - After runnning this file, please continue at the main step 4.
 
-### Analysis with ALOS-2 (sub branchs)
+### Analysis with ALOS-2 (sub sequence)
 #### s1_ALOS-2_EstimateSAR-FloodPrb.ipynb
 - This code is under review.
 - This is a prototype and not tested with practical flood data.
@@ -199,10 +199,18 @@ Uploads data to Re:Earth CMS.
 - **Required Files**: Model files
 - **Attention**: The area of interest must be included within the local SAR TIFF file since this file is a prototype.
   
-### Analysis with ASNARO-2 (sub branchs)
-(under construction)
-with locally stored GeoTIFF file. Classicaly analyzed with back scatter coefficient from one scene.
-#### files
+### Analysis with ASNARO-2 (sub sequence)
+#### s1-s2_ASNARO-2_EstimateSAR_FloodPrb.ipynb
+- Works with locally stored GeoTIFF file.
+- Classicaly analyzed with back scatter coefficient from one scene.
+- **Required Procedures**: Connection to Google Drive. **Upload local ASNARO-2 SAR data into Google Drive** and specify location `tiff_path`.
+
+### Uploading some selected files (sub sequence)
+#### s5_SelectedFileFupload.ipynb
+- Uploading functionality only.
+- You can select which files to be uploaded.
+- Assuming uploading some updates.
+- **Required Procedures**: Connection to Google Drive, Authentication with Re:Earth CMS.
 
 ## Boundary Samples
 Please use these sample GeoJSONs in boundary_samples directory for 0_PrepareProject upon your needs.
