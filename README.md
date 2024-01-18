@@ -1,127 +1,222 @@
-# SAR衛星解析による洪水被害の推定 <!-- OSSの対象物の名称を記載ください。分かりやすさを重視し、できるだけ日本語で命名ください。英語名称の場合は日本語説明を（）書きで併記ください。 -->
+# Flood Analysis with SAR for project PLATEAU
 
-![概要](./img/tutorial_001.png) <!-- OSSの対象物のスクリーンショット（画面表示がない場合にはイメージ画像）を貼り付けください -->
+## Overall Description
+This project is a usecase for PLATEAU in FY2023. This repository utilizes SAR and other datasources to estimate flood area and depth and evaluates the damage of each building in the city of interest.
 
-## 1. 概要 <!-- 本リポジトリでOSS化しているソフトウェア・ライブラリについて1文で説明を記載ください -->
-本リポジトリでは、Project PLATEAUの令和4年度のユースケース開発業務の一部であるUC23-01「人工衛星観測データを用いた浸水被害把握等」について、その成果物である「SAR衛星解析による洪水被害の推定システム」のソースコードを公開しています。
+This project has been tested on Google Colaboratory (2023.Nov).
 
-「SAR衛星解析による洪水被害の推定システム」は、洪水時に撮影されたSAR衛星データとPLATEAUの3D都市モデルを活用し、洪水時の浸水範囲や、浸水深といった洪水被害を推定するシステムです。
+## Installation
+The easiest way to deploy this repository is clicking this link => <a href="https://colab.research.google.com/github/eukarya-inc/plateau-2023-uc01-satellite-analytics/blob/main/Git2Colab_Installation_PLATEAU_FloodSAR.ipynb" target="_blank">Git2Colab_Installation_PLATEAU_FloodSAR.ipynb</a> and running it on Google Colaboratory. It will download all you need to your Google drive including model files not stored on this GitHub repository. 
 
+## Descriptions of Source Codes under PLATEAU-FloodSAR directory 
+This repository is designed to be deployed on Google Drive and used primarily through Google Colab. The notebooks should be executed in the order indicated by the sequential numbers at the beginning of their filenames. Each notebook first downloads necessary data and caches precomputed data on Google Drive for memory efficiency and reusability. Subsequent notebooks utilize these cached data for predictions. Therefore, it's essential to authorize Google Drive connection and create a working directory on Google Drive. The path to this directory must be set before executing the notebooks. **Note: Attention the available space on your Google Drive, especially when making predictions over extensive areas.**
 
-## 2. 「人工衛星観測データを用いた浸水被害把握等」について <!-- 「」内にユースケース名称を記載ください。本文は以下のサンプルを参考に記載ください。URLはアクセンチュアにて設定しますので、サンプルそのままでOKです。 -->
-「人工衛星観測データを用いた浸水被害把握等」では、洪水等の浸水被害発生直後の人工衛星観測データ（SARデータ）から分析した浸水範囲と3D都市モデルの地形モデル及び建築物モデルをマッチングさせることで、家屋単位での浸水深の算出および被災判定を行うシステムを開発する。さらに、導出された被災家屋リストをデータベース化し、WebGISエンジン上で可視化するシステムを構築することで、行政における罹災証明書発行業務の効率化を目指す。
-本システムは、人工衛星観測データ（SARデータ）によって取得された浸水範囲と、3D都市モデルが持つ家屋情報を組み合わせて分析することで、家屋単位の浸水深を算出するウェブシステムを開発した。
-本システムは、行政職員向けのGUIを備えたオープンソースソフトウェアとしてフルスクラッチで開発されています。
-本システムの詳細については[技術検証レポート](https://www.mlit.go.jp/plateau/file/libraries/doc/plateau_tech_doc_0030_ver01.pdf)を参照してください。
+**main / sub sequences**: Main sequence consists of 6 notebooks + 1 python file and utilizes Sentinel-1 data from Google Earth Engine. Sub sequences utilize other data sources such as flood area JSON from GIAJ.
+<details>
+<summary><bf>Detailed diagram</bf></summary>
+	
+```mermaid
+graph TD
+	subgraph main sequence
+	0prep["0_PrepareProject.ipynb"]-->1est["1_EstimateSAR-FloodPrbDiff.ipynb"]
+	1est --> 2gen["2_GeneratePointGroup.ipynb"]
+	2gen --> 3calc["3_CalcFloodDEMRaster.ipynb"]
+	3calc --> 4asses["4_AssessBuildings.ipynb"]
+	4asses --> 5up["5_Upload.ipynb"]
+	end
+	
+	
+	subgraph sub sequences
+	0prep --> 1ALOS["s1_ALOS-2_EstimateSAR-FloodPrb.ipynb"]
+	1ALOS --> 2gen
+	0prep -->  1-3GIAJ["s1-s3_GIAJ_FloodArea_Raster.ipynb"]
+	1-3GIAJ --> 3calc
+	end
+```
+</details>
 
-## 3. 利用手順 <!-- 下記の通り、GitHub Pagesへリンクを記載ください。URLはアクセンチュアにて設定しますので、サンプルそのままでOKです。 -->
-本システムの構築手順及び利用手順については[利用チュートリアル](https://r5-plateau-acn.github.io/SolarPotential/)を参照してください。
+**sub-sequence notation on the file name**: notebook files wich names start with "s" belong to sub sequences. A sub-branch file substitutes the step(s) of the main sequence associated with the number(s) following to "s" or in range noted as "s#-s#".
 
-## 4. システム概要 <!-- OSS化対象のシステムが有する機能を記載ください。 -->
-### 【人工衛星観測データの解析】
-#### ⓪プロジェクトの初期・3D都市モデル（CityGML）の読み込み（0_PrepareProject.ipynb）
-- 解析対象となるCityGMLと、対象エリアとなる領域の緯度・経度情報またはポリゴンデータを入力することで、CityGMLを解析して、対象エリアの建物データを生成し、日本の地理情報機関からデジタル標高モデル（DEM、5mメッシュ）を事前にダウンロードします。
-- ここでは、GoogleDriveへの接続が必要となります。
+### Analysis with Sentinel-1 from Google Earth Engine (main sequence) 
+<details>
+<summary><bf>Detailed diagram</bf></summary>
 
-#### ①SARデータの読み込み・SARデータによる浸水確率ラスターデータの推定（1_EstimateSAR-FloodPrbDiff.ipynb）
-- 対象となる洪水日を指定することでその日の人工衛星観測データを、GoogleEarthEngineからSentinel-1の人工衛星観測データを取得し、これを利用して浸水学習モデルを使用して、浸水エリアを分類します。
-- 出力は浸水確率ラスターデータであり、洪水時の人工衛星観測データとその前の人工衛星観測データの浸水確率の差を示しています。
-- ここでは、GoogleDriveへの接続が必要となります。
+```mermaid
+graph TD
+	Sentinel-1[/Sentinel-1/] --> GEE
+	
+	GEE--> UNET
+	GEE --> UNET2
+	
+	GFD[/"Global Flood Database"/]--> UNET
+	
+	subgraph Flood Estimation Model Training
+	UNET["Training with UNET/PyTorch"]-->LM[/"Flood learning model"/]
+	end
+	
+	DEM[/"DEM (Elevation, Geospatial Information Authority of Japan)"/]--->loadingDEM
+	CGML[/"CityGML"/] --> PlateauUtils
+	
+	
+	subgraph plateau_floodsar_lib.py
+	loadingDEM["caching DEM from GIAJ"] --> localDEM[/locally saved DEM/]
+	localDEM --> loadinglocalDEM["loading locally saved DEM"]
+	end
+	
+	PlateauUtils --> preloading
 
-#### ②浸水ポイントクラウドデータの生成（2_GeneratePointGroup.ipynb）
-- 浸水確率ラスターデータで特定の閾値を超える確率の差があるピクセルを浸水に分類する。その後、ピクセルはグリッドシステムの違いを克服するために点群データを形成する多数のランダムポイントに変換される。
-- ここでは、GoogleDriveへの接続が必要となります。
-- 以下のパラメータ調整が可能です。
+	subgraph 0_PrepareProject.ipynb
+	boundary[/boundary data/]-->preloading
+	preloading --> localBld[/locally saved parsed buildings/]
+	preloading -----> loadingDEM
+	preloading --> localBnd[/locally saved boundary/]
+	end
+	
+	
+	subgraph 1_EstimateSAR-FloodPrbDiff.ipynb
+	date[/"Date of interest"/] --> UNET2
+	LM --> UNET2
+	localBnd-->UNET2["estimating flood probability with UNET/PyTorch"]
+	UNET2 --> FR[/"Flood probability raster data"/]
+	end
+	
+	subgraph 2_GeneratePointGroup.ipynb
+	FR --> PT["Flood point cloud data generation"]
+	PT --> PTD[/"Point cloud dataset"/]
+	end
+	
+	subgraph 3_CalcFloodDEMRaster.ipynb
+	PTD --> STAT["Statistical processing of point cloud"]
+	STAT --> FLDepth[/"Flood-depth raster data"/]
+	STAT --> FLDEM[/"Flood-surface-DEM raster data"/]
+	end
+	
+	loadinglocalDEM --> STAT
+	
+	subgraph 4_AssessBuildings.ipynb
+	FLDEM --> FDEVAL["Flood depth calculation for each building"]
+	FDEVAL --> FCAT["Disaster category diagnosis for each building"]
+	FCAT --> FCArray[/"Building damage data (CSV)"/]
+	FCAT --> FCHEAT2Dtiles[/"Heat-map 2D tiles for some building categories"/]
+	end
+	
+	loadinglocalDEM --> FDEVAL
+	localBld --> FDEVAL
+	
+	subgraph 5_Upload.ipynb
+	FLDepth ----->CnvTile
+	FLDEM -----> CnvTile["Converting to tiles"]
+	CnvTile --> FLDEM3Dtile[/"3D tile of flood surface"/]
+	CnvTile --> FLDEM2Dtile[/"2D tile of flood surface"/]
+	CnvTile --> FLDepth2Dtile[/"2D tile of flood depth category"/]
+	FLDEM3Dtile --> upload["Uplaoding to Re:Earth"]
+	FLDEM2Dtile --> upload
+	FLDepth2Dtile --> upload
+	FCArray --> upload
+	FCHEAT2Dtiles --> upload
+	end
+	upload --> RECA["Re:EarthCmsAPI"]
+```
+</details>
 
-#### ③浸水面の高度ラスターデータと浸水深データの生成（3_CalcFloodDEMRaster.ipynb）
-- 浸水ポイントクラウドデータから浸水面の高度ラスターデータと浸水深データを生成します。
-- ここでは、GoogleDriveへの接続が必要となります。
-- 以下のパラメータの調整が可能です。
+#### Flood Estimation Model Training (already run for you)
 
-#### ④建物への浸水深付与（4_AssessBuildings.ipynb）
-- 建物データと浸水面の高度ラスターデータを使用して、建物の被災データ（CSV形式）を生成します。
-- 各建物への浸水深は、DEM内の建物の位置と浸水レベルの高低差によって決定される。その後、建物は構造種別と浸水深に基づいて異なる被災カテゴリに分類され、床上浸水か床下浸水かどうかが判定される。
-- ここでは、GoogleDriveへの接続が必要となります。
+Inputs: Global Flood Database
 
-### 【解析結果のアップロード】
-#### ⑤Re:Earth CMSへのアップロード（5_Upload.ipynb）
-- 前項目で生成したデータを読み込み、データをRe:Earth CMSにアップロードします。
-- ここでは、GoogleDriveへの接続・Re:Earth CMSとの認証が必要となります。
+Output: Flood Learning Model (VV/VH, VV)
 
-### 【プログラム】
-#### DEMデータの補正用のプログラム（plateau_floodsar_lib.py）
-- ⓪、③、④で呼び出されるプログラムです。
-- 日本の地理情報機関からDEMタイルをダウンロードし、ローカルに保存。複数のタイプのDEMデータ（例：DEM5A、DEM5B）を統合し、ジオイド高さを計算し、指定されたエリアの値を抽出および補完します。
+This step involves creating a flood learning model that classifies Sentinel-1 observations based on the flood areas from the Global Flood Database. The classifier comes in two versions: a dual polarization version (VV/VH) and a single polarization version (VV). The source code is stored in `training` directory. **This step is already run for you and the resultant models will be downloaded via the installation previously described. Basically you don't need to run this step by yourself.** 
 
-### 【GIAJ浸水エリアのGeoJSONファイルの分析（サブシーケンス）】
-#### GIAJ GeoJSONから浸水面の高度ラスターデータの生成（s1-s3_GIAJ_FloodArea_Raster.ipynb）
-- ローカルに保存されたJSONファイルで動作します。
-- GIAJ GeoJsonから洪水面高度ラスターデータを生成します。
-- メインステップ①〜③を代替します。
-- このファイルを実行した後、メインステップ④で続行してください。
-- ここでは、GoogleDriveへの接続が必要となります。
+#### 0_PrepareProject.ipynb
+Inputs: CityGML, boundary of interest
 
-### 【ALOS-2の分析（サブシーケンス）】
-#### ALOS-2の分析（s1_ALOS-2_EstimateSAR-FloodPrb.ipynb）
-- ローカルに保存されたGeoTIFFファイルで動作します。ローカルのALOS-2 SARデータをGoogle Driveにアップロードし、tiff_pathの場所を指定してください。
-- メインステップ①を代替します。
-- このファイルを実行した後、メインステップ②で続行してください。
-- ここでは、GoogleDriveへの接続が必要となります。
-- 注意: このファイルはプロトタイプであるため、対象エリアはローカルのSAR TIFFファイルに含まれている必要があります。
-- データを見つけるヒントについてはFindSARofJapan.mdを読んでください。
+Output: boundary, parsed building data, locally cached DEM
 
-### 【ASNARO-2の分析（サブシーケンス）】
-#### ASNARO-2の分析（s1-s2_ASNARO-2_EstimateSAR_FloodPrb.ipynb）
-- ローカルに保存されたGeoTIFFファイルで動作します。
-- メインステップ①～②を代替します。
-- このファイルを実行した後、メインステップ③で続行してください。
-- ここでは、GoogleDriveへの接続が必要となります。
+Initializes the project by setting up the case name and defining the area of interest. Parses CityGML to generate building data within the specified area and pre-downloads Digital Elevation Model (DEM, 5m mesh from the Geospatial Information Authority of Japan).
+- **Required Procedures**: Connection to Google Drive.
 
-## 5. 利用技術（未対応（サンプルのまま））
+#### 1_EstimateSAR-FloodPrbDiff.ipynb
+Inputs: Sentinel-1 (from Google Earth Engine), Flood Learning Model, Date of intereset, boundary
 
-| 種別              | 名称   | バージョン | 内容 |
-| ----------------- | --------|-------------|-----------------------------|
-| ミドルウェア       | [poetry](https://python-poetry.org/) | 1.3.2 | Pythonライブラリの管理 |
-| ライブラリ      | [GeoAlchemy2](https://geoalchemy-2.readthedocs.io/) | 0.10.2 | SQL データベースを Python で利用するためのライブラリ <br> SQLAlchemyの空間データベース機能拡張（PostGIS にアクセスするために使用） |
-|       | [Jageocoder](https://www.info-proto.com/jageocoder/) | 2.0.0 | 住所ジオコーダライブラリ（不動産登記情報における建物所在地を登記所備付地図と突合するために使用） |
-|       | [GEOS](https://libgeos.org/) | 3.1.0 | 地理空間情報を処理するためのオープンソースライブラリ（Geometry Engine Open Source） |
-|       | [Proj4](https://proj.org/) | 4.5.0 | 空間参照系変換ライブラリ |
-|       | [React.js](https://react.dev/) | 18.2.0 | ユーザインターフェース構築のための JavaScript ライブラリ |
+Output: Flood raster data (Probability Difference)
 
-## 6. 動作環境（未対応（サンプルのまま）） <!-- 動作環境についての仕様を記載ください。 -->
-| 項目               | 最小動作環境                                                                                                                                                                                                                                                                                                                                    | 推奨動作環境                   | 
-| ------------------ | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ------------------------------ | 
-| OS                 | Microsoft Windows 10 または 11                                                                                                                                                                                                                                                                                                                  |  同左 | 
-| CPU                | Intel Core i3以上                                                                                                                                                                                                                                                                                                                               | Intel Core i5以上              | 
-| メモリ             | 4GB以上                                                                                                                                                                                                                                                                                                                                         | 8GB以上                        | 
-| ディスプレイ解像度 | 1024×768以上                                                                                                                                                                                                                                                                                                                                    |  同左                   | 
-| ネットワーク       | 【解析・シミュレーション】<br>不要<br>【集計・適地判定】<br>範囲選択機能を使用しない場合はネットワーク環境は不要<br>範囲選択機能を使用する場合、以下のURLを閲覧できる環境が必要<br>・地理院地図（国土地理院）　<br>http://cyberjapandata.gsi.go.jp<br>・地図表示のため標準地図<br>https://cyberjapandata.gsi.go.jp/xyz/std/{z}/{x}/{y}.png |  同左                            | 
+Flood classification of Sentinel-1 observations is conducted using the flood learning model. In the main branch, the dual polarization version of the model is used. The output is flood probability raster data (logit), showing the difference in flood probability between the time of the event and its previous regression.
+- **Required Procedures**: Authentication with Google Earth Engine (GEE), Connection to Google Drive.
 
-## 7. 本リポジトリのフォルダ構成 <!-- 本GitHub上のソースファイルの構成を記載ください。 -->
-| フォルダ名 |　詳細 |
-|-|-|
-| 0_PrepareProject.ipynb | プロジェクトの初期・3D都市モデル（CityGML）の読み込み |
-| 1_EstimateSAR-FloodPrbDiff.ipynb | SARデータの読み込み・SARデータによる浸水確率ラスターデータの推定 |
-| 2_GeneratePointGroup.ipynb | 浸水ポイントクラウドデータの生成 |
-| 3_CalcFloodDEMRaster.ipynb | 浸水面の高度ラスターデータと浸水深データの生成 |
-| 4_AssessBuildings.ipynb | 建物への浸水深付与 |
-| 5_Upload.ipynb | Re:Earth CMSへのアップロード |
-| plateau_floodsar_lib.py | DEMデータの補正用のプログラム |
-| s1-s3_GIAJ_FloodArea_Raster.ipynb | GIAJ GeoJSONから浸水面の高度ラスターデータの生成 |
-| s1_ALOS-2_EstimateSAR-FloodPrb.ipynb | ALOS-2の分析 |
-| s1-s2_ASNARO-2_EstimateSAR_FloodPrb.ipynb | ASNARO-2の分析 |
+#### 2_GeneratePointGroup.ipynb
+Inputs: Flood raster data (logit) 
 
-## 8. ライセンス <!-- 変更せず、そのまま使うこと。 -->
+Output: Flood point cloud data
 
-- ソースコード及び関連ドキュメントの著作権は国土交通省に帰属します。
-- 本ドキュメントは[Project PLATEAUのサイトポリシー](https://www.mlit.go.jp/plateau/site-policy/)（CCBY4.0及び政府標準利用規約2.0）に従い提供されています。
+In this step, pixels with probability differences above a certain threshold in the flood raster data are classified as flooded. Then, pixels are converted to numerous random points which form point cloud data to overcome the difference of the grid systems. Parameters are adjustable.
+- **Required Procedures**: Connection to Google Drive.
 
-## 9. 注意事項 <!-- 変更せず、そのまま使うこと。 -->
+#### 3_CalcFloodDEMRaster.ipynb
+Inputs: Flood Raster Data (logit), DEM 
 
-- 本リポジトリは参考資料として提供しているものです。動作保証は行っていません。
-- 本リポジトリについては予告なく変更又は削除をする可能性があります。
-- 本リポジトリの利用により生じた損失及び損害等について、国土交通省はいかなる責任も負わないものとします。
+Output: Flood surface DEM raster data, Flood depth raster data
 
-## 10. 参考資料 <!-- 技術検証レポートのURLはアクセンチュアにて記載します。 -->
-- 技術検証レポート: https://www.mlit.go.jp/plateau/file/libraries/doc/plateau_tech_doc_0030_ver01.pdf
-- PLATEAU WebサイトのUse caseページ「カーボンニュートラル推進支援システム」: https://www.mlit.go.jp/plateau/use-case/uc22-013/
+Generates flood surface elevation raster data and depth data from point cloud data. Parameters are adjustable.
+
+- **Required Procedures**: Connection to Google Drive.
+
+#### 4_AssessBuildings.ipynb
+Inputs: parsed building data, DEM, Flood surface DEM raster Data
+
+Output: Building Damage Data (CSV), 2D tiles of heatmaps for some building categories
+
+The flood depth for each building is determined by the difference in elevation between the building's location in the DEM and the flood level. The buildings are then categorized into different disaster categories based on their structure and flood depth, either above or below the ground level.
+
+Generates disaster data for buildings using building data and flood surface elevation raster data.
+- **Required Procedures**: Connection to Google Drive.
+
+#### 5_Upload.ipynb
+Input: Building Damage Data (CSV), 2D tiles of heatmaps for some building categories, Flood surface DEM raster Data, Flood depth raster data
+
+Output: 2Dtile of flood surface dem, 2Dtile of flood depth
+
+Uploads data to Re:Earth CMS. Please use s5_SelectedFileUpload.ipynb if you simply want to upload files without generating 2D tiles at this file.
+- **Required Procedures**: Connection to Google Drive, Authentication with Re:Earth CMS.
+
+#### plateau_floodsar_lib.py
+- Called in steps 0, 3, and 4.
+- Downloads and locally saves DEM tiles from the Geospatial Information Authority of Japan, integrates multiple types (e.g., DEM5A, DEM5B), calculates geoid height, and extracts and fills values for the specified area. (Includes 4 classes)
+
+### Analysis with GIAJ flood area GeoJSON file (sub sequence)
+#### s1-s3_GIAJ_FloodArea_Raster.ipynb
+- Works with locally stored JSON file.
+- Generates flood surface elevation raster data from GIAJ GeoJson.
+- Substitutes the main steps 1 ~ 3.
+- After runnning this file, please continue at the main step 4.
+
+### Analysis with ALOS-2 (sub sequence)
+#### s1_ALOS-2_EstimateSAR-FloodPrb.ipynb
+- This code is under review.
+- This is a prototype and not tested with practical flood data.
+- Works with locally stored GeoTIFF files. 
+- Generates flood probability raster data (logit) from **local** ALOS-2 SAR data (TIFF).
+- **Required Procedures**: Connection to Google Drive. **Upload local ALOS-2 SAR data into Google Drive** and specify location `tiff_path`.
+- **Required Files**: Model files
+- **Attention**: The area of interest must be included within the local SAR TIFF file since this file is a prototype.
+- Please read [FindSARofJapan.md](https://github.com/eukarya-inc/plateau-2023-uc01-satellite-analytics/blob/main/FindSARofJapan.md) to find some hints on finding data.
+  
+### Analysis with ASNARO-2 (sub sequence)
+#### s1-s2_ASNARO-2_EstimateSAR_FloodPrb.ipynb
+- Works with locally stored GeoTIFF file.
+- Classicaly analyzed with back scatter coefficient from one scene.
+- **Required Procedures**: Connection to Google Drive. **Upload local ASNARO-2 SAR data into Google Drive** and specify location `tiff_path`.
+
+### Uploading some selected files (sub sequence)
+#### s5_SelectedFileFupload.ipynb
+- Uploading functionality only.
+- You can select which files to be uploaded.
+- Assuming uploading some updates.
+- **Required Procedures**: Connection to Google Drive, Authentication with Re:Earth CMS.
+
+## Boundary Samples
+Please use these sample GeoJSONs in boundary_samples directory for 0_PrepareProject upon your needs.
+
+## Model files
+Following PyTorch model files are stored outside of this GitHub repository due to the filesize limitation. They will be downloaded to your Google drive automatically if you use our installation code Git2Colab_Installation_PLATEAU_FloodSAR.ipynb.
+- model_epoch_vv_119.pth https://drive.google.com/file/d/1VEgB3VcLOYEwud9Zo-QsHUAMmNkrGDZq/
+- model_epoch_aug_mask_100.pth https://drive.google.com/file/d/1rD68QJQr-gmF9jeZY5qBjVJJqoWOFe7E/
