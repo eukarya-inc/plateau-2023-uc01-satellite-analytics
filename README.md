@@ -218,5 +218,5 @@ Please use these sample GeoJSONs in boundary_samples directory for 0_PrepareProj
 
 ## Model files
 Following PyTorch model files are stored outside of this GitHub repository due to the filesize limitation. They will be downloaded to your Google drive automatically if you use our installation code Git2Colab_Installation_PLATEAU_FloodSAR.ipynb.
-- model_epoch_vv_119.pth https://drive.google.com/file/d/1VEgB3VcLOYEwud9Zo-QsHUAMmNkrGDZq/
-- model_epoch_aug_mask_100.pth https://drive.google.com/file/d/1rD68QJQr-gmF9jeZY5qBjVJJqoWOFe7E/
+- model_epoch_vv_119.pth https://assets.cms.plateau.reearth.io/assets/36/fe406e-8261-4e95-952b-2747266e3537/model_epoch_vv_119.pth
+- model_epoch_aug_mask_100.pth https://assets.cms.plateau.reearth.io/assets/59/c4a445-6a85-4be1-b3fb-fc716c573847/model_epoch_aug_mask_100.pth
