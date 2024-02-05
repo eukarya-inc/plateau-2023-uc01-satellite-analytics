@@ -722,4 +722,5 @@ class ValueBoundInspector:
 
     def release_cntrs_all(self):
         del self.cntrsets
+        self.cntrsets = {}
 ### End of ValueBoundInspector
