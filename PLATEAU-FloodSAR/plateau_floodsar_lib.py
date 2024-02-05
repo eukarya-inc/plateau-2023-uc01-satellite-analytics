@@ -32,7 +32,7 @@ __DEMLIST = [
 
 def translate_to_lats(ys, z):
     n = __TD * (2.0 ** z) # in pixel scale
-    ycorr = np.pi * (1.0 - np.array(ys)/n)
+    ycorr = np.pi * (1.0-2.0*np.array(ys)/n)
     lat_rad = np.arcsin(np.tanh(ycorr))
     lat_deg = np.degrees(lat_rad)
     return lat_deg
@@ -42,7 +42,7 @@ def translate_to_ys(lats, z):
 
 def translate_to_ys_float(lats, z):
     n = __TD * (2.0 ** z) # in pixel scale
-    return (1.0-2.0*np.arctanh(np.sin(np.radians(np.array(lats))))/np.pi)*n
+    return (1.0-np.arcsinh(np.tan(np.radians(np.array(lats))))/np.pi)*n/2.0
 
 def calc_xyz_from_lonlat(lon: float, lat: float, z: int):
     """緯度と経度を含むタイルのXYZ座標を計算する関数
@@ -51,7 +51,8 @@ def calc_xyz_from_lonlat(lon: float, lat: float, z: int):
     #print(lon, lat, z)
     n = 2.0 ** z
     x = int((lon + 180.0) / 360.0 * n)
-    y = int( (1.0-2.0math.atanh(math.sin(math.radians(lat)))/np.pi)*n )
+    y = int( (1.0-np.arcsinh(np.tan(np.radians(lat)))/np.pi)*n/2.0 )
+    #print(f"calc_xyz_from_lonlat: ({lat}, {lon}) => ({z}/{x}/{y})")
     return (x, y) #, (lon, lat)
 
 def calc_lonlat_from_xyz(x, y, z):
@@ -60,9 +61,10 @@ def calc_lonlat_from_xyz(x, y, z):
     """
     n = 2.0 ** z
     lon_deg = x / n * 360.0 - 180.0
-    ycorr = np.pi * (1.0 - 2.0 * y / n)
-    lat_rad = math.asin(math.tanh(ycorr))
-    lat_deg = math.degrees(lat_rad)
+    ycorr = np.pi * (1.0-2.0 * y / n)
+    lat_rad = np.arctan(np.sinh(ycorr))
+    lat_deg = np.degrees(lat_rad)
+    #print(f"calc_lonlat_from_xyz: ({z}/{x}/{y}) => ({lat_deg}, {lon_deg})")
     return lon_deg, lat_deg
 
 def generate_lonslats_from_boundbox(boundbox: Tuple[float,float,float,float],
@@ -244,6 +246,7 @@ class GiajDemHandler:
         dx = cx-xl
         yh = yl + 1
         dy = cy - yl
+        #print(np.shape(tile0["dem"]), (yl, xl))
         dem_ll = tile0["dem"][yl,xl]
         if xh < self.TD:
             dem_lh = tile0["dem"][yl,xh]
