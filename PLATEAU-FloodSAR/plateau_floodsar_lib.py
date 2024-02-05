@@ -20,8 +20,8 @@ from progressbar import progressbar
 import skimage
 from skimage import measure
 
-__LATLIMIT = 85.0511
-__YZERO = math.atanh(math.sin(math.radians(__LATLIMIT)))
+#__LATLIMIT = 85.0511
+#__YZERO = math.atanh(math.sin(math.radians(__LATLIMIT)))
 __TD = 256
 __DEMLIST = [
     {"error":0.3, "type":"dem5a", "z":15},
@@ -32,7 +32,7 @@ __DEMLIST = [
 
 def translate_to_lats(ys, z):
     n = __TD * (2.0 ** z) # in pixel scale
-    ycorr = __YZERO - (np.array(ys)/n * __YZERO * 2.0)
+    ycorr = np.pi * (1.0 - np.array(ys)/n)
     lat_rad = np.arcsin(np.tanh(ycorr))
     lat_deg = np.degrees(lat_rad)
     return lat_deg
@@ -42,7 +42,7 @@ def translate_to_ys(lats, z):
 
 def translate_to_ys_float(lats, z):
     n = __TD * (2.0 ** z) # in pixel scale
-    return ( __YZERO-np.arctanh(np.sin(np.radians(np.array(lats)))))/(2.0*__YZERO) * n
+    return (1.0-2.0*np.arctanh(np.sin(np.radians(np.array(lats))))/np.pi)*n
 
 def calc_xyz_from_lonlat(lon: float, lat: float, z: int):
     """緯度と経度を含むタイルのXYZ座標を計算する関数
@@ -51,8 +51,7 @@ def calc_xyz_from_lonlat(lon: float, lat: float, z: int):
     #print(lon, lat, z)
     n = 2.0 ** z
     x = int((lon + 180.0) / 360.0 * n)
-    y = int( (__YZERO-math.atanh(math.sin(math.radians(lat))))
-        /(2.0*__YZERO) * n )
+    y = int( (1.0-2.0math.atanh(math.sin(math.radians(lat)))/np.pi)*n )
     return (x, y) #, (lon, lat)
 
 def calc_lonlat_from_xyz(x, y, z):
@@ -61,7 +60,7 @@ def calc_lonlat_from_xyz(x, y, z):
     """
     n = 2.0 ** z
     lon_deg = x / n * 360.0 - 180.0
-    ycorr = __YZERO - (y * __YZERO * 2.0 / n)
+    ycorr = np.pi * (1.0 - 2.0 * y / n)
     lat_rad = math.asin(math.tanh(ycorr))
     lat_deg = math.degrees(lat_rad)
     return lon_deg, lat_deg
