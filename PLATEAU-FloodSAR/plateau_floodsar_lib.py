@@ -51,7 +51,7 @@ def calc_xyz_from_lonlat(lon: float, lat: float, z: int):
     #print(lon, lat, z)
     n = 2.0 ** z
     x = int((lon + 180.0) / 360.0 * n)
-    y = int( (1.0-2.0math.atanh(math.sin(math.radians(lat)))/np.pi)*n )
+    y = int( (1.0-2.0*math.atanh(math.sin(math.radians(lat)))/np.pi)*n )
     return (x, y) #, (lon, lat)
 
 def calc_lonlat_from_xyz(x, y, z):
