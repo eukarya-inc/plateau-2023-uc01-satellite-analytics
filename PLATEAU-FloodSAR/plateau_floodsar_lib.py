@@ -132,8 +132,12 @@ def calc_lonslats_of_tiles(x: int, y:int, z:int, xnum: int = 1, ynum: int = 1):
     Returns:
         Tuple: (longitudes (list), latitudes (list))
     """
-    bbox = calc_bounds_of_tiles(x,y,z, xnum=xnum, ynum=ynum)
-    return generate_lonslats_from_boundbox(bbox,(__TD*xnum,__TD*ynum))
+    #print(f"Calculating lons and lats of x={x}-{x+xnum}, y={y}-{y+ynum} at z={z}") #checknow
+    linx = x + np.arange(0.0, xnum+1,1.0/__TD)
+    liny = y + np.arange(0.0, ynum+1,1.0/__TD)
+    return calc_lonlat_from_xyz(linx, liny, z)
+    #bbox = calc_bounds_of_tiles(x,y,z, xnum=xnum, ynum=ynum)
+    #return generate_lonslats_from_boundbox(bbox,(__TD*xnum,__TD*ynum))
 
 def calc_floatIdx_of_list(val:float, list):
     """
@@ -184,7 +188,13 @@ class GiajDemHandler:
         self.TD = tilesize
         self.numpixels = self.numtiles * self.TD
 
-        self.alllats = translate_to_lats(np.arange(0,self.numtiles*self.TD),zoom)
+        self.alllons, self.alllats = calc_lonslats_of_tiles(0,0,self.zoom,self.numtiles,self.numtiles)
+        #print(f"lons: {self.alllons}") #checknow
+        #print(f"lats: {self.alllats}") #checknow
+        #self.alllats = translate_to_lats(np.arange(0,self.numtiles*self.TD),zoom)
+
+    def get_lonslats_of_tiles(self, x:int, y:int, xnum:int=1, ynum:int=1):
+        return np.copy(self.alllons[x*self.TD:(x+xnum)*self.TD]), np.copy(self.alllats[y*self.TD:(y+ynum)*self.TD])
 
     def load_dem_tiles(self, boundary:Polygon, multiple: int = 1) -> None:
         """load_dem_tiles method
@@ -242,6 +252,9 @@ class GiajDemHandler:
             cy = calc_floatIdx_of_list(lat, tile0["lats"])
             xl = int(cx)
             yl = int(cy)
+        #print((lon,lat)) #checknow
+        #print(tile0["lons"]) #checknow
+        #print(tile0["lats"]) #checknow
         xh = xl + 1
         dx = cx-xl
         yh = yl + 1
@@ -285,6 +298,7 @@ class GiajDemHandler:
             boundary (Polygon):
             multiple (int): base number of tile width and height. Default is 1
         """
+        #print("start stiching") #checknow
         if len(self.tiles) == 0:
             return None
 
@@ -306,8 +320,8 @@ class GiajDemHandler:
                 tile = self.get_tile_safe(xx,yy)
                 #print((isy,isx))
                 dem[isy:isy+self.TD,isx:isx+self.TD] = tile["dem"]
-        lons, lats = calc_lonslats_of_tiles(sx, sy, self.zoom,
-            xnum=xnum, ynum=ynum)
+        lons, lats = self.get_lonslats_of_tiles(sx, sy, xnum=xnum, ynum=ynum)
+        #print("finish stiching") #checknow
         return {"dem":dem, "lons":lons, "lats":lats,
             "tilebounds":(sx, sy, ex, ey)}
 
@@ -349,6 +363,7 @@ class GiajDemHandler:
     def load_dem_tile(self, x: int, y: int):
         """
         """
+        #print(f"loading tile {x}/{y}") #checknow
         xcorr = int(x % self.numtiles)
         key = f"{xcorr}/{y}"
         dirpath = self.path+f"{xcorr}/"
@@ -386,8 +401,9 @@ class GiajDemHandler:
                     ] # chhanged 2023Oct25: response.text => txt
                 )
                 np.save(npyfile, dem)
-        lons, lats = calc_lonslats_of_tiles(xcorr,y,self.zoom)
+        lons, lats = self.get_lonslats_of_tiles(xcorr,y)
         self.set_tile(xcorr,y,dem,lons,lats)
+        #print("finish loading") #checknow
 
     def set_tile(self, x, y, dem, lons, lats):
         key = f"{x}/{y}"
@@ -504,7 +520,7 @@ class GiajGeoidHandler(GiajDemHandler):
             if not flg_nodata:
                 dem = self.tilepngarr_to_values(tile_data)
                 np.save(npyfile, dem)
-        lons, lats = calc_lonslats_of_tiles(xcorr,y,self.zoom)
+        lons, lats = self.get_lonslats_of_tiles(xcorr,y)
         self.set_tile(xcorr,y,dem,lons,lats)
 
   def produce_tile_stiched(self, boundary:Polygon = None, multiple: int = 1):
@@ -560,9 +576,10 @@ class GiajDemManager(GiajDemHandler):
         key = f"{xcorr}/{y}"
         dirpath = self.path+f"{xcorr}/"
         npyfile = self.path+key+".npy"
-        lons, lats = calc_lonslats_of_tiles(xcorr,y,self.zoom)
+        lons, lats = self.get_lonslats_of_tiles(xcorr,y)
         clon = lons[int(len(lons)/2)]
         clat = lats[int(len(lats)/2)]
+        #print(f"GDM: loading {key} ({clon,clat})") #checknow
         self.prep_dir(dirpath)
         if os.path.isfile(npyfile):
             #print("loading ",npyfile)
@@ -574,10 +591,10 @@ class GiajDemManager(GiajDemHandler):
             for ii, lon in enumerate(lons):
                 for jj, lat in enumerate(lats):
                     if np.isnan(dem[jj,ii]):
-                        cnt = 0
+                        #cnt = 0
                         for hdl in self.handlers[1:]:
                             #print(cnt)
-                            cnt += 1
+                            #cnt += 1
                             dem_tmp = hdl.calc_dem_interp(lon, lat)
                             if not np.isnan(dem_tmp):
                                 dem[jj,ii] = dem_tmp
